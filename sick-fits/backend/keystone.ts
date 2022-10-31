@@ -1,6 +1,11 @@
 import 'dotenv/config';
 import { config, createSchema } from '@keystone-next/keystone/schema';
 import { User } from './schemas/User';
+import { createAuth } from '@keystone-next/auth';
+import {
+  withItemData,
+  statelessSessions,
+} from '@keystone-next/keystone/session';
 
 const databaseURL = process.env.DATABASE_URL;
 
@@ -9,21 +14,38 @@ const sessionConfig = {
   secret: process.env.COOKIE_SECRET,
 };
 
-export default config({
-  server: {
-    cors: {
-      origin: [process.env.FRONTEND_URL],
-      credentials: true,
-    },
+const { withAuth } = createAuth({
+  listKey: 'User',
+  identityField: 'email',
+  secretField: 'password',
+  initFirstItem: {
+    fields: ['name', 'email', 'password'],
   },
-  db: {
-    adapter: 'mongoose',
-    url: databaseURL,
-    // TODO: Add data seeding here
-  },
-  lists: createSchema({ User }),
-  ui: {
-    isAccessAllowed: () => true,
-  },
-  // TODO: Add session values here
 });
+
+export default withAuth(
+  config({
+    server: {
+      cors: {
+        origin: [process.env.FRONTEND_URL],
+        credentials: true,
+      },
+    },
+    db: {
+      adapter: 'mongoose',
+      url: databaseURL,
+      // TODO: Add data seeding here
+    },
+    lists: createSchema({ User }),
+    ui: {
+      // Show the UI only for people who pass this test
+      isAccessAllowed: ({ session }) => {
+        console.log('🚀 ~ file: keystone.ts ~ line 43 ~ session', session.data);
+        return !!session?.data;
+      },
+    },
+    session: withItemData(statelessSessions(sessionConfig), {
+      User: 'id name',
+    }),
+  })
+);
