@@ -2,6 +2,7 @@ import 'dotenv/config';
 import { config, createSchema } from '@keystone-next/keystone/schema';
 import { User } from './schemas/User';
 import { createAuth } from '@keystone-next/auth';
+import { Product } from './schemas/Product';
 import {
   withItemData,
   statelessSessions,
@@ -36,7 +37,7 @@ export default withAuth(
       url: databaseURL,
       // TODO: Add data seeding here
     },
-    lists: createSchema({ User }),
+    lists: createSchema({ User, Product }),
     ui: {
       // Show the UI only for people who pass this test
       isAccessAllowed: ({ session }) => {
