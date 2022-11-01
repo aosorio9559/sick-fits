@@ -1,3 +1,2 @@
-export default function IndexPage() {
-  return <h2>Sick</h2>;
-}
+// This will display the Products page as our homepage
+export { default } from './products';
