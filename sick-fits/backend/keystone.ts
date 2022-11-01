@@ -8,6 +8,7 @@ import {
   withItemData,
   statelessSessions,
 } from '@keystone-next/keystone/session';
+import { insertSeedData } from './seed-data';
 
 const databaseURL = process.env.DATABASE_URL;
 
@@ -36,13 +37,17 @@ export default withAuth(
     db: {
       adapter: 'mongoose',
       url: databaseURL,
-      // TODO: Add data seeding here
+      async onConnect(keystone) {
+        console.log('🚀 Connected to the database');
+        if (process.argv.includes('--seed-data')) {
+          await insertSeedData(keystone);
+        }
+      },
     },
     lists: createSchema({ User, Product, ProductImage }),
     ui: {
       // Show the UI only for people who pass this test
       isAccessAllowed: ({ session }) => {
-        console.log('🚀 ~ file: keystone.ts ~ line 43 ~ session', session.data);
         return !!session?.data;
       },
     },
