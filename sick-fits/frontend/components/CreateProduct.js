@@ -1,5 +1,33 @@
+import { useMutation } from '@apollo/client';
+import gql from 'graphql-tag';
 import useForm from '../lib/useForm';
+import DisplayError from './ErrorMessage';
 import Form from './styles/Form';
+
+const CREATE_PRODUCT_MUTATION = gql`
+  mutation CREATE_PRODUCT_MUTATION(
+    # Which vars are getting passed in and what types are they
+    $name: String!
+    $description: String!
+    $price: Int!
+    $image: Upload
+  ) {
+    createProduct(
+      data: {
+        name: $name
+        description: $description
+        price: $price
+        status: "AVAILABLE"
+        photo: { create: { image: $image, altText: $name } }
+      }
+    ) {
+      id
+      name
+      description
+      price
+    }
+  }
+`;
 
 export default function CreateProduct() {
   const { inputs, handleChange, resetForm, clearForm } = useForm({
@@ -9,10 +37,24 @@ export default function CreateProduct() {
     description: '',
   });
 
+  const [createProduct, { data, error, loading }] = useMutation(
+    CREATE_PRODUCT_MUTATION,
+    {
+      variables: inputs,
+    }
+  );
+
   return (
-    <Form onSubmit={(e) => e.preventDefault()}>
+    <Form
+      onSubmit={async (e) => {
+        e.preventDefault();
+        await createProduct();
+        clearForm();
+      }}
+    >
+      <DisplayError error={error} />
       {/* We can disable multiple inputs at once by adding a 'disabled' attribute to a fieldset  */}
-      <fieldset>
+      <fieldset disabled={loading} aria-busy={loading}>
         <label htmlFor="image">
           Image
           <input
@@ -20,6 +62,17 @@ export default function CreateProduct() {
             type="file"
             id="image"
             name="image"
+            onChange={handleChange}
+          />
+        </label>
+        <label htmlFor="name">
+          Name
+          <input
+            type="text"
+            id="name"
+            name="name"
+            placeholder="Name"
+            value={inputs.name}
             onChange={handleChange}
           />
         </label>
