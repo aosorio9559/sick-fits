@@ -2,8 +2,8 @@ import useForm from '../lib/useForm';
 
 export default function CreateProduct() {
   const { inputs, handleChange, resetForm, clearForm } = useForm({
-    name: 'Ale',
-    price: 100,
+    name: '',
+    price: '',
   });
 
   return (
