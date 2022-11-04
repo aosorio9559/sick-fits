@@ -1,7 +1,13 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 
 export default function useForm(initial = {}) {
   const [inputs, setInputs] = useState(initial);
+  // We'll use it to listen for value changes rather than object (initial) changes to avoid an infinite loop and will allow us to render the UpdateProduct view correctly
+  const initialValues = Object.values(initial).join('');
+
+  useEffect(() => {
+    setInputs(initial);
+  }, [initialValues]);
 
   function handleChange(e) {
     let { name, type, value } = e.target;
