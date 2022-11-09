@@ -42,8 +42,6 @@ export default function SignIn() {
     resetForm();
   }
 
-  console.log(data?.authenticateUserWithPassword);
-
   return (
     <Form method="POST" onSubmit={handleSubmit}>
       <fieldset>

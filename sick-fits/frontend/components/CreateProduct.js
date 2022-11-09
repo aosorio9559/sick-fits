@@ -51,10 +51,10 @@ export default function CreateProduct() {
     <Form
       onSubmit={async (e) => {
         e.preventDefault();
-        const res = await createProduct();
+        const { data } = await createProduct();
         clearForm();
         Router.push({
-          pathname: `/product/${res.data.createProduct.id}`,
+          pathname: `/product/${data.createProduct.id}`,
         });
       }}
     >
