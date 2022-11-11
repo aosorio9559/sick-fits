@@ -18,13 +18,16 @@ export default function RequestReset() {
     email: '',
   });
 
-  const [signup, { data, error, loading }] = useMutation(REQUEST_RESET_MUTATION, {
-    variables: inputs,
-  });
+  const [requestReset, { data, error, loading }] = useMutation(
+    REQUEST_RESET_MUTATION,
+    {
+      variables: inputs,
+    }
+  );
 
   async function handleSubmit(e) {
     e.preventDefault();
-    await signup().catch(console.error);
+    await requestReset().catch(console.error);
     resetForm();
   }
 
@@ -37,7 +40,6 @@ export default function RequestReset() {
         <h2>Request a password reset</h2>
         <DisplayError error={error} />
 
-
         <label htmlFor="email">
           Email
           <input
@@ -49,7 +51,6 @@ export default function RequestReset() {
             onChange={handleChange}
           />
         </label>
-
 
         <button type="submit">Request reset</button>
       </fieldset>
