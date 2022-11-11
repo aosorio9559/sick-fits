@@ -9,6 +9,7 @@ import {
   statelessSessions,
 } from '@keystone-next/keystone/session';
 import { insertSeedData } from './seed-data';
+import { sendPasswordResetEmail } from './lib/mail';
 
 const databaseURL = process.env.DATABASE_URL;
 
@@ -26,7 +27,8 @@ const { withAuth } = createAuth({
   },
   passwordResetLink: {
     async sendToken(args) {
-      console.log(args);
+      // Send the email
+      await sendPasswordResetEmail(args.token, args.identity);
     },
   },
 });
