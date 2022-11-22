@@ -10,6 +10,7 @@ import {
 } from '@keystone-next/keystone/session';
 import { insertSeedData } from './seed-data';
 import { sendPasswordResetEmail } from './lib/mail';
+import { CartItem } from './schemas/CartItem';
 
 const databaseURL = process.env.DATABASE_URL;
 
@@ -51,7 +52,7 @@ export default withAuth(
         }
       },
     },
-    lists: createSchema({ User, Product, ProductImage }),
+    lists: createSchema({ User, Product, ProductImage, CartItem }),
     ui: {
       // Show the UI only for people who pass this test
       isAccessAllowed: ({ session }) => {
