@@ -25,7 +25,9 @@ export default function Pagination({ page }) {
   return (
     <PaginationStyles>
       <Head>
-        <title>Sick Fits - Page {page} of __</title>
+        <title>
+          Sick Fits - Page {page} of {pageCount}
+        </title>
       </Head>
       <Link href={`/products/${page - 1}`}>
         {/* We had to used <a> to add aria-disabled attribute */}
