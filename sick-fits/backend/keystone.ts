@@ -1,3 +1,4 @@
+import { extendGraphqlSchema } from './mutations/index';
 import 'dotenv/config';
 import { config, createSchema } from '@keystone-next/keystone/schema';
 import { User } from './schemas/User';
@@ -52,7 +53,13 @@ export default withAuth(
         }
       },
     },
-    lists: createSchema({ User, Product, ProductImage, CartItem }),
+    lists: createSchema({
+      User,
+      Product,
+      ProductImage,
+      CartItem,
+    }),
+    extendGraphqlSchema,
     ui: {
       // Show the UI only for people who pass this test
       isAccessAllowed: ({ session }) => {
