@@ -11,6 +11,9 @@ import styled from 'styled-components';
 import SickButton from './styles/SickButton';
 import gql from 'graphql-tag';
 import { useMutation } from '@apollo/client';
+import { useRouter } from 'next/router';
+import { useCart } from '../lib/cartState';
+import { CURRENT_USER_QUERY } from './User';
 
 const CheckoutFormStyles = styled.form`
   box-shadow: 0 1px 2px 2px rgba(0, 0, 0, 0.04);
@@ -41,7 +44,11 @@ function CheckoutForm() {
   const [loading, setLoading] = useState(false);
   const stripe = useStripe();
   const elements = useElements();
-  const [checkout, { error: graphQLError }] = useMutation(CREATE_ORDER_MUTATION);
+  const router = useRouter();
+  const { closeCart } = useCart();
+  const [checkout, { error: graphQLError }] = useMutation(CREATE_ORDER_MUTATION, {
+    refetchQueries: [{query: CURRENT_USER_QUERY}],
+  });
 
   async function handleSubmit(e) {
     // 1. Stop form submission and turn the loader on
@@ -72,8 +79,12 @@ function CheckoutForm() {
 
 
     // 6. Change the page to view the order
+    router.push({
+      pathname: '/order/[id]',
+      query: { id: order.data.checkout.id },
+    })
     // 7. Clear the Cart
-
+    closeCart();
     // 8. Turn the loader off
     setLoading(false);
     nProgress.done();
