@@ -1,3 +1,9 @@
+import PleaseSignIn from '../components/PleaseSignIn';
+
 export default function AccountPage() {
-  return <p>account page</p>;
+  return (
+    <PleaseSignIn>
+      <p>account page</p>
+    </PleaseSignIn>
+  );
 }
